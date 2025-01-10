@@ -1,0 +1,19 @@
+{
+    "response": {
+        "header": {
+            "reqNo": 334375059,
+            "resultCode": "00",
+            "resultMsg": "NORMAL SERVICE."
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "kindCd": "000117",
+                        "knm": "기타축종"
+                    }
+                ]
+            }
+        }
+    }
+}
