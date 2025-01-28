@@ -4,9 +4,9 @@ import os
 
 # 파일 경로 딕셔너리
 BREED_FILES = {
-    "dog": {"json": "breed/json/dog_breeds.json", "csv": "breed/csv/dog_breeds.csv"},
-    "cat": {"json": "breed/json/cat_breeds.json", "csv": "breed/csv/cat_breeds.csv"},
-    "extra": {"json": "breed/json/extra_breeds.json", "csv": "breed/csv/extra_breeds.csv"}
+    "dog": {"json": "breed/open-api-response/dog_breeds.json", "csv": "breed/csv/dog_breeds.csv"},
+    "cat": {"json": "breed/open-api-response/cat_breeds.json", "csv": "breed/csv/cat_breeds.csv"},
+    "extra": {"json": "breed/open-api-response/extra_breeds.json", "csv": "breed/csv/extra_breeds.csv"}
 }
 
 # 상수 선언
@@ -45,31 +45,6 @@ def save_breeds_to_csv(json_file_path, csv_file_path):
         print(f"Error: Missing key in JSON file - {e}")
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON file {json_file_path}: {e}")
-
-# import csv
-
-def print_csv_content(csv_file_path):
-    """
-    CSV 파일 내용을 출력합니다.
-    
-    :param csv_file_path: CSV 파일 경로 (str)
-    """
-    try:
-        with open(csv_file_path, mode="r", encoding="utf-8") as file:
-            reader = csv.reader(file)
-            for row in reader:
-                print(row)
-    except FileNotFoundError:
-        print(f"Error: File {csv_file_path} does not exist.")
-    except Exception as e:
-        print(f"Error reading CSV file {csv_file_path}: {e}")
-
-# CSV 파일 경로
-csv_file_path = "breed/csv/cat_breeds.csv"
-
-# CSV 내용 출력
-print_csv_content(csv_file_path)
-
 
 # 함수 호출
 for breed_type, paths in BREED_FILES.items():
