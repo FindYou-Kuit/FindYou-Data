@@ -22,7 +22,7 @@ class AnimalDataFetcher:
         self, 
         num_of_rows: int = 100,
         page_no: int = 1,
-        up_kind_cd: Optional[str] = None,  # 417000: 개, 422400: 고양이, 429900: 기타
+        upkind: Optional[str] = None,  # 417000: 개, 422400: 고양이, 429900: 기타
         state: str = "notice"  # notice: 공고중, protect: 보호중
     ) -> Dict:
         """
@@ -31,23 +31,23 @@ class AnimalDataFetcher:
         Args:
             num_of_rows: 한 페이지 결과 수 (최대 1000)
             page_no: 페이지 번호
-            up_kind_cd: 축종 코드 (417000: 개, 422400: 고양이, 429900: 기타)
+            upkind: 축종 코드 (417000: 개, 422400: 고양이, 429900: 기타)
             state: 상태 (notice: 공고중, protect: 보호중, all: 전체)
         
         Returns:
             API 응답 데이터
         """
-        endpoint = f"{self.base_url}/abandonmentPublic"
+        endpoint = f"{self.base_url}/abandonmentPublic_v2"
         
         params = {
             'serviceKey': self.api_key,
-            'numOfRows': num_of_rows,
-            'pageNo': page_no,
+            'numOfRows': str(num_of_rows),
+            'pageNo': str(page_no),
             '_type': 'json'
         }
         
-        if up_kind_cd:
-            params['upcKindCd'] = up_kind_cd
+        if upkind:
+            params['upkind'] = upkind
             
         if state != "all":
             params['state'] = state
