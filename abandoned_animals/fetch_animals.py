@@ -16,7 +16,7 @@ class AnimalDataFetcher:
         """
         # API 키가 인코딩되어 있다면 디코딩
         self.api_key = unquote(api_key)
-        self.base_url = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc"
+        self.base_url = "https://apis.data.go.kr/1543061/abandonmentPublicService_v2"
         
     def fetch_abandoned_animals(
         self, 
