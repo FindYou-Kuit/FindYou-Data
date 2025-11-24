@@ -24,29 +24,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pillow
       
-      - name: Fetch animal data
+      - name: Auto post to Instagram
         env:
           ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
         run: |
           cd abandoned_animals
-          python fetch_animals.py
+          python auto_post.py
         continue-on-error: false
       
-      - name: Create Instagram post image
-        run: |
-          cd abandoned_animals
-          python create_instagram_post.py
-        continue-on-error: false
-      
-      - name: Upload artifacts
+      - name: Upload data artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: instagram-post-${{ github.run_number }}
+          name: animal-data-${{ github.run_number }}
           path: |
             abandoned_animals/data/
-            abandoned_animals/output/
-          retention-days: 30
+          retention-days: 7
           if-no-files-found: warn
       
       - name: Commit and push data
@@ -54,21 +49,19 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          # 파일이 있는지 확인하고 추가
+          # 데이터 파일만 커밋 (이미지는 더 이상 저장하지 않음)
           if [ -d "abandoned_animals/data" ] && [ "$(ls -A abandoned_animals/data)" ]; then
             git add abandoned_animals/data/
-          fi
-          
-          if [ -d "abandoned_animals/output" ] && [ "$(ls -A abandoned_animals/output)" ]; then
-            git add abandoned_animals/output/
-          fi
-          
-          # 변경사항이 있으면 커밋 및 푸시
-          if ! git diff --staged --quiet; then
-            git commit -m "🤖 Daily animal data update $(date +'%Y-%m-%d')"
-            git push
+            
+            # 변경사항이 있으면 커밋 및 푸시
+            if ! git diff --staged --quiet; then
+              git commit -m "🤖 Daily animal data update $(date +'%Y-%m-%d') - Posted to Instagram"
+              git push
+            else
+              echo "No changes to commit"
+            fi
           else
-            echo "No changes to commit"
+            echo "No data files to commit"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
