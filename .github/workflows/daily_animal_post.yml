@@ -30,29 +30,46 @@ jobs:
         run: |
           cd abandoned_animals
           python fetch_animals.py
+        continue-on-error: false
       
       - name: Create Instagram post image
         run: |
           cd abandoned_animals
           python create_instagram_post.py
+        continue-on-error: false
       
       - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: instagram-post-${{ github.run_number }}
           path: |
-            abandoned_animals/data/**/*.json
-            abandoned_animals/output/**/*.png
+            abandoned_animals/data/
+            abandoned_animals/output/
           retention-days: 30
+          if-no-files-found: warn
       
       - name: Commit and push data
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add abandoned_animals/data/
-          git add abandoned_animals/output/
-          git diff --staged --quiet || git commit -m "🤖 Daily animal data update $(date +'%Y-%m-%d')"
-          git push
+          
+          # 파일이 있는지 확인하고 추가
+          if [ -d "abandoned_animals/data" ] && [ "$(ls -A abandoned_animals/data)" ]; then
+            git add abandoned_animals/data/
+          fi
+          
+          if [ -d "abandoned_animals/output" ] && [ "$(ls -A abandoned_animals/output)" ]; then
+            git add abandoned_animals/output/
+          fi
+          
+          # 변경사항이 있으면 커밋 및 푸시
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Daily animal data update $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No changes to commit"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
