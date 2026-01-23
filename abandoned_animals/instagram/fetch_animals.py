@@ -23,7 +23,10 @@ class AnimalDataFetcher:
         num_of_rows: int = 100,
         page_no: int = 1,
         upkind: Optional[str] = None,  # 417000: 개, 422400: 고양이, 429900: 기타
-        state: str = "notice"  # notice: 공고중, protect: 보호중
+        state: str = "notice",  # notice: 공고중, protect: 보호중
+        bgnde: Optional[str] = None,  # 시작일 (YYYYMMDD)
+        endde: Optional[str] = None,  # 종료일 (YYYYMMDD)
+        upr_cd: Optional[str] = None  # 시도 코드 (6110000: 서울, 6410000: 경기)
     ) -> Dict:
         """
         유기동물 정보를 조회합니다.
@@ -33,6 +36,9 @@ class AnimalDataFetcher:
             page_no: 페이지 번호
             upkind: 축종 코드 (417000: 개, 422400: 고양이, 429900: 기타)
             state: 상태 (notice: 공고중, protect: 보호중, all: 전체)
+            bgnde: 시작일 (YYYYMMDD)
+            endde: 종료일 (YYYYMMDD)
+            upr_cd: 시도 코드 (6110000: 서울, 6410000: 경기 등)
         
         Returns:
             API 응답 데이터
@@ -51,6 +57,15 @@ class AnimalDataFetcher:
             
         if state != "all":
             params['state'] = state
+        
+        if bgnde:
+            params['bgnde'] = bgnde
+        
+        if endde:
+            params['endde'] = endde
+        
+        if upr_cd:
+            params['upr_cd'] = upr_cd
         
         try:
             response = requests.get(endpoint, params=params)
@@ -75,7 +90,7 @@ class AnimalDataFetcher:
         Returns:
             동물 정보 리스트
         """
-        data = self.fetch_abandoned_animals(num_of_rows=count, page_no=1, state="notice")
+        data = self.fetch_abandoned_animals(num_of_rows=100, page_no=1, state="notice")
         
         if not data or 'response' not in data:
             print("데이터를 가져올 수 없습니다.")
