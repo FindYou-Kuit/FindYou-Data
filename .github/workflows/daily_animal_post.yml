@@ -63,6 +63,8 @@ jobs:
   post-lost:
     if: ${{ github.event.inputs.post_type != 'abandoned' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout repository
@@ -101,16 +103,16 @@ jobs:
       
       - name: Commit posted animals record
         run: |
+          # Configure git with token authentication
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           
           if [ -f "abandoned_animals/instagram/data/posted_lost_animals.json" ]; then
             git add abandoned_animals/instagram/data/posted_lost_animals.json
             
             if ! git diff --staged --quiet; then
               git commit -m "🤖 Update posted lost animals record $(TZ=Asia/Seoul date +'%Y-%m-%d')"
-              git push
+              git push origin main
             fi
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
