@@ -2,8 +2,8 @@ name: Daily Animal Instagram Post
 
 on:
   schedule:
-    # 매일 오전 9시 (KST) = UTC 0시
-    - cron: '0 0 * * *'
+    # 매일 오후 6시 (KST) = UTC 9시
+    - cron: '0 9 * * *'
   workflow_dispatch:  # 수동 실행
     inputs:
       date:
