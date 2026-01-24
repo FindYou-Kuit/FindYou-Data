@@ -1,11 +1,14 @@
 import requests
 import json
+import os
+
+# Service Key from environment variable
+service_key = os.getenv('PUBLIC_DATA_API_KEY')
+if not service_key:
+    raise Exception("PUBLIC_DATA_API_KEY 환경변수가 필요합니다.")
 
 # Base URL for the GET request
-base_url = f"http://apis.data.go.kr/1543061/abandonmentPublicSrvc/sigungu?serviceKey=Mqn0b2BWoDH7qfXyzuOIfwA5O9dj4Dt9yOBuB4vGVpyMo5HOM0USlNPSzV5A5hfB%2FUhfl2yQHbIbMGs2luskgA%3D%3D"
-
-# Service Key (keep URL-encoded)
-service_key = f"Mqn0b2BWoDH7qfXyzuOIfwA5O9dj4Dt9yOBuB4vGVpyMo5HOM0USlNPSzV5A5hfB%2FUhfl2yQHbIbMGs2luskgA%3D%3D"
+base_url = f"http://apis.data.go.kr/1543061/abandonmentPublicSrvc/sigungu?serviceKey={service_key}"
 
 # Mapping of upr_cd to filenames
 codes_and_files = {
@@ -30,7 +33,6 @@ codes_and_files = {
 # Iterate over each upr_cd and save the corresponding JSON
 for upr_cd, filename in codes_and_files.items():
     params = {
-        # "serviceKey": service_key,
         "upr_cd": upr_cd,
         "_type": "json"
     }

@@ -1,5 +1,11 @@
 # Environment variables
 .env
+.env.*
+
+# Generated images (temporary files)
+generated_images/
+*.jpg
+*.png
 
 # Python
 __pycache__/
