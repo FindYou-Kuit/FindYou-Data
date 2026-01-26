@@ -3,7 +3,7 @@ name: Daily Animal Instagram Post
 on:
   schedule:
     # 테스트: 오후 8시 34분 (KST) = UTC 11시 34분
-    - cron: '*/3 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:  # 수동 실행
     inputs:
       date:
