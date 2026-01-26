@@ -2,8 +2,8 @@ name: Daily Animal Instagram Post
 
 on:
   schedule:
-    # 테스트: 오후 8시 34분 (KST) = UTC 11시 34분
-    - cron: '*/5 * * * *'
+    # 매일 오후 6시 (KST) = UTC 9시
+    - cron: '0 9 * * *'
   workflow_dispatch:  # 수동 실행
     inputs:
       date:
@@ -21,18 +21,10 @@ on:
           - lost
 
 jobs:
-  # 워크플로우 자동 비활성화 방지
-  keepalive:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: liskin/gh-workflow-keepalive@v1
 
   post-abandoned:
-    if: ${{ github.event.inputs.post_type != 'lost' }}
+    # schedule 이벤트이거나, workflow_dispatch에서 post_type이 'lost'가 아닐 때 실행
+    if: github.event_name == 'schedule' || github.event.inputs.post_type != 'lost'
     runs-on: ubuntu-latest
     
     steps:
@@ -71,7 +63,8 @@ jobs:
           python run_post.py ${{ steps.date.outputs.target_date }} --post
 
   post-lost:
-    if: ${{ github.event.inputs.post_type != 'abandoned' }}
+    # schedule 이벤트이거나, workflow_dispatch에서 post_type이 'abandoned'가 아닐 때 실행
+    if: github.event_name == 'schedule' || github.event.inputs.post_type != 'abandoned'
     runs-on: ubuntu-latest
     permissions:
       contents: write
