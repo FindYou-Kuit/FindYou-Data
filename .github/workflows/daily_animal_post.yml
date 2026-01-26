@@ -21,6 +21,16 @@ on:
           - lost
 
 jobs:
+  # 워크플로우 자동 비활성화 방지
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: liskin/gh-workflow-keepalive@v1
+
   post-abandoned:
     if: ${{ github.event.inputs.post_type != 'lost' }}
     runs-on: ubuntu-latest
