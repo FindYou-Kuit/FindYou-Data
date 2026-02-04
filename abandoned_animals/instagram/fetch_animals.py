@@ -4,9 +4,12 @@
 import requests
 import json
 import os
+from dotenv import load_dotenv
 from datetime import datetime
 from typing import List, Dict, Optional
 from urllib.parse import unquote
+
+load_dotenv()
 
 class AnimalDataFetcher:
     def __init__(self, api_key: str):
@@ -135,10 +138,7 @@ class AnimalDataFetcher:
 
 def main():
     # 환경변수에서 API 키 가져오기 (없으면 기본값 사용)
-    api_key = os.getenv(
-        'ANIMAL_API_KEY',
-        'Mqn0b2BWoDH7qfXyzuOIfwA5O9dj4Dt9yOBuB4vGVpyMo5HOM0USlNPSzV5A5hfB%2FUhfl2yQHbIbMGs2luskgA%3D%3D'
-    )
+    api_key = os.getenv('ANIMAL_API_KEY')
     
     fetcher = AnimalDataFetcher(api_key)
     

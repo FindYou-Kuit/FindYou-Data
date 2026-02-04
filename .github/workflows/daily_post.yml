@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pillow selenium webdriver-manager
+          pip install requests pillow selenium webdriver-manager python-dotenv
       
       - name: Get date
         id: date
@@ -56,7 +56,9 @@ jobs:
       - name: Post abandoned animals
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}
+          FINDYOU_CDN_URL: ${{ secrets.FINDYOU_CDN_URL }}
           FINDYOU_CDN_TOKEN: ${{ secrets.FINDYOU_CDN_TOKEN }}
         run: |
           cd abandoned_animals/instagram
@@ -84,7 +86,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pillow selenium webdriver-manager
+          pip install requests pillow selenium webdriver-manager python-dotenv
       
       - name: Get date
         id: date
@@ -98,7 +100,9 @@ jobs:
       - name: Post lost animals
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          ANIMAL_API_KEY: ${{ secrets.ANIMAL_API_KEY }}
+          FINDYOU_CDN_URL: ${{ secrets.FINDYOU_CDN_URL }}
           FINDYOU_CDN_TOKEN: ${{ secrets.FINDYOU_CDN_TOKEN }}
         run: |
           cd abandoned_animals/instagram

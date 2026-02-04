@@ -10,30 +10,30 @@ import json
 import time
 import random
 import requests
+from dotenv import load_dotenv
 from datetime import datetime
 from create_image import ImageGenerator
 from fetch_animals import AnimalDataFetcher
+
+load_dotenv()
 
 
 class InstagramAutoPost:
     def __init__(self):
         # FindYou CDN 설정
-        self.cdn_url = "http://15.164.101.240:9001/api/v2/images/upload"
+        self.cdn_url = os.getenv("FINDYOU_CDN_URL")
         self.cdn_token = os.getenv("FINDYOU_CDN_TOKEN")
-        
+
         # Instagram 설정
         self.ig_token = os.getenv("INSTAGRAM_ACCESS_TOKEN")
-        self.ig_account_id = os.getenv("INSTAGRAM_ACCOUNT_ID", "17841474128230216")
+        self.ig_account_id = os.getenv("INSTAGRAM_ACCOUNT_ID")
         self.graph_api = "https://graph.facebook.com/v20.0"
-        
+
         # 이미지 생성기
         self.image_generator = ImageGenerator()
-        
+
         # API 키
-        self.api_key = os.getenv(
-            'ANIMAL_API_KEY',
-            'Mqn0b2BWoDH7qfXyzuOIfwA5O9dj4Dt9yOBuB4vGVpyMo5HOM0USlNPSzV5A5hfB%2FUhfl2yQHbIbMGs2luskgA%3D%3D'
-        )
+        self.api_key = os.getenv('ANIMAL_API_KEY')
         
     def fetch_animals(self, target_date, count=7):
         """1. 동물 데이터 가져오기 (서울 1 + 경기 1 + 랜덤 5 = 총 7마리)"""

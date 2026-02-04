@@ -141,9 +141,9 @@ class LostAnimalImageGenerator:
 
         .title {{
             position: absolute;
-            width: 1000px;
+            width: 100%;
             height: 70px;
-            left: 40px;
+            left: 0;
             top: 63px;
             font-family: 'Jua', sans-serif;
             font-style: normal;
@@ -152,6 +152,7 @@ class LostAnimalImageGenerator:
             line-height: 70px;
             text-align: center;
             color: #2C2B2B;
+            white-space: nowrap;
         }}
 
         .label {{
