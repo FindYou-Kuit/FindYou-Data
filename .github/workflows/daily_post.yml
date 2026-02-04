@@ -22,28 +22,28 @@ on:
 
 jobs:
 
-  post-abandoned:
-    # schedule 이벤트이거나, workflow_dispatch에서 post_type이 'lost'가 아닐 때 실행
-    if: github.event_name == 'schedule' || github.event.inputs.post_type != 'lost'
+  post:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install Chrome
         uses: browser-actions/setup-chrome@latest
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests pillow selenium webdriver-manager python-dotenv
-      
+
       - name: Get date
         id: date
         run: |
@@ -52,8 +52,9 @@ jobs:
           else
             echo "target_date=$(TZ=Asia/Seoul date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Post abandoned animals
+        if: github.event_name == 'schedule' || github.event.inputs.post_type != 'lost'
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
@@ -64,40 +65,8 @@ jobs:
           cd abandoned_animals/instagram
           python run_post.py ${{ steps.date.outputs.target_date }} --post
 
-  post-lost:
-    # schedule 이벤트이거나, workflow_dispatch에서 post_type이 'abandoned'가 아닐 때 실행
-    if: github.event_name == 'schedule' || github.event.inputs.post_type != 'abandoned'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@latest
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pillow selenium webdriver-manager python-dotenv
-      
-      - name: Get date
-        id: date
-        run: |
-          if [ -n "${{ github.event.inputs.date }}" ]; then
-            echo "target_date=${{ github.event.inputs.date }}" >> $GITHUB_OUTPUT
-          else
-            echo "target_date=$(TZ=Asia/Seoul date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          fi
-      
       - name: Post lost animals
+        if: github.event_name == 'schedule' || github.event.inputs.post_type != 'abandoned'
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
@@ -107,17 +76,16 @@ jobs:
         run: |
           cd abandoned_animals/instagram
           python run_post_lost.py ${{ steps.date.outputs.target_date }} --post
-      
+
       - name: Commit posted animals record
         run: |
-          # Configure git with token authentication
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          
+
           if [ -f "abandoned_animals/instagram/data/posted_lost_animals.json" ]; then
             git add abandoned_animals/instagram/data/posted_lost_animals.json
-            
+
             if ! git diff --staged --quiet; then
               git commit -m "🤖 Update posted lost animals record $(TZ=Asia/Seoul date +'%Y-%m-%d')"
               git push origin main
