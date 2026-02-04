@@ -125,9 +125,16 @@ class LostAnimalAutoPost:
         for animal in animals:
             popfile = animal.get('popfile', '')
             animal_id = self._get_animal_id(animal)
-            
+
             # 이미지 URL이 유효하고 + 이미 포스팅하지 않은 경우만
             if popfile and '/files/' in popfile and animal_id not in self.posted_ids:
+                # 실제 이미지 접근 가능한지 확인
+                try:
+                    resp = requests.head(popfile, timeout=5)
+                    if resp.status_code != 200:
+                        continue
+                except Exception:
+                    continue
                 filtered_animals.append(animal)
         
         print(f"🔍 필터링 후 (이미지 있음 + 미포스팅): {len(filtered_animals)}마리")
